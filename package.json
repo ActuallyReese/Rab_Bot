@@ -1,0 +1,22 @@
+{
+  "name": "rab_bot",
+  "version": "1.0.0",
+  "description": "A simple Discord bot using the Hikari api. Currently it can:",
+  "main": "discord.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ActuallyReese/RabBot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ActuallyReese/RabBot/issues"
+  },
+  "homepage": "https://github.com/ActuallyReese/RabBot#readme",
+  "dependencies": {
+    "discord.js": "^14.2.0"
+  }
+}
