@@ -3,6 +3,7 @@ from random import *
 import requests
 import json
 import pandas as pd
+import re
 from datetime import date
 
 from config import Hikari_Key, Api_Key, WORDNIK_API_KEY
@@ -77,9 +78,9 @@ async def bot_started(event):
 #Randomly responds and reacts to messages
 @bot.listen(hikari.GuildMessageCreateEvent)
 async def Bwaah(event):
-    x = randint(1, 100)
+    x = randint(1, 500)
     print("x is ", x)
-    y = randint(1, 80)
+    y = randint(1, 200)
     print("y is ", y)
     if event.content.startswith("") and x==2:
         await event.message.respond("Bwaaahh!", tts=Toggle, reply=True)
@@ -96,18 +97,9 @@ async def Bwaah(event):
 #Responds to a specific set of words
 @bot.listen(hikari.GuildMessageCreateEvent)
 async def WordRespond(event):
-    if event.content.__contains__("loss"):
+    if re.match("(?i)(.?L.?o.?s.?s.?)|(.?l.?o.?s.?t.?)|(.?l.?o.?s.?e.?)",event.content):
         await event.message.respond("|   \|l \n||  |_")
-    if event.content.__contains__("lost"):
-        await event.message.respond("|   \|l \n||  |_")
-    if event.content.__contains__("Lost"):
-        await event.message.respond("|   \|l \n||  |_")
-    if event.content.__contains__("Loss"):
-        await event.message.respond("|   \|l \n||  |_")
-
-    America = ["america", "usa", "free"]
-    for word in America:
-        if event.content.lower().__contains__(word):
+    if re.match("(?i)(.?a.?m.?e.?r.?i.?c.?a.?)|(.?u.?s.?a.?)|(.?f.?r.?e.?e.?)",event.content):
             await event.message.add_reaction("🇲🇾")
 
 
