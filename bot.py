@@ -97,9 +97,9 @@ async def Bwaah(event):
 #Responds to a specific set of words
 @bot.listen(hikari.GuildMessageCreateEvent)
 async def WordRespond(event):
-    if re.search("(?i)(.?L.?o.?s.?s.?)|(.?l.?o.?s.?t.?)|(.?l.?o.?s.?e.?)",event.content):
+    if re.search("(?i)([^A-Z]?L[^A-Z]?o[^A-Z]?s[^A-Z]?s[^A-Z]?)|([^A-Z]?l[^A-Z]?o[^A-Z]?s[^A-Z]?t[^A-Z]?)|([^A-Z]?l[^A-Z]?o[^A-Z]?s[^A-Z]?e[^A-Z]?)",event.content):
         await event.message.respond("|   \|l \n||  |_")
-    if re.search("(?i)(.?a.?m.?e.?r.?i.?c.?a.?)|(.?u.?s.?a.?)|(.?f.?r.?e.?e.?)",event.content):
+    if re.search("(?i)([^A-Z]?a[^A-Z]?m[^A-Z]?e[^A-Z]?r[^A-Z]?i[^A-Z]?c[^A-Z]?a[^A-Z]?)|([^A-Z]?u[^A-Z]?s[^A-Z]?a[^A-Z]?)|([^A-Z]?f[^A-Z]?r[^A-Z]?e[^A-Z]?e[^A-Z]?)",event.content):
             await event.message.add_reaction("🇲🇾")
 
 
