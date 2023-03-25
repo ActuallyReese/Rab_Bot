@@ -4,11 +4,20 @@ import requests
 import json
 import pandas as pd
 import re
-from datetime import date
+from datetime import date, datetime
+import time
+import schedule
 
-from config import Hikari_Key, Api_Key, WORDNIK_API_KEY
+from config import Hikari_Key, Api_Key, WORDNIK_API_KEY, STABILITY_KEY
 from animalfact import get_panda
 
+
+import os
+import io
+import warnings
+from PIL import Image
+from stability_sdk import client
+import stability_sdk.interfaces.gooseai.generation.generation_pb2 as generation
 
 
 bot = hikari.GatewayBot(token=
@@ -160,12 +169,94 @@ async def Coins(event):
         await event.message.add_reaction("🔥")
 
 
+#Stable Diffusion
+@bot.listen(hikari.GuildMessageCreateEvent)
+async def Picture(event):
+    STABILITY_HOST = 'grpc.stability.ai:443'
+
+    if event.content.startswith("Rdraw") or event.content.startswith("rdraw"):
+        rprompt = (event.content + " add a rabbit").replace("rdraw", "")
+        chance = randint(1, 2)
+        if chance == 1:
+            await event.message.respond("One moment, please :)")
+        elif chance == 2:
+            await event.message.respond("Coming right up!")
+        print(rprompt)
+
+
+#################################################################################
+
+            # Set up our connection to the API.
+        stability_api = client.StabilityInference(
+        key= STABILITY_KEY, # API Key reference.
+        verbose=True, # Print debug messages.
+        engine="stable-diffusion-v1-5", # Set the engine to use for generation.
+        # Available engines: stable-diffusion-v1 stable-diffusion-v1-5 stable-diffusion-512-v2-0 stable-diffusion-768-v2-0
+        # stable-diffusion-512-v2-1 stable-diffusion-768-v2-1 stable-inpainting-v1-0 stable-inpainting-512-v2-0
+        )
+
+
+        answers = stability_api.generate(
+            prompt= rprompt,
+            #seed=992446758, # If a seed is provided, the resulting generated image will be deterministic.
+                            # What this means is that as long as all generation parameters remain the same, you can always recall the same image simply by generating it again.
+                            # Note: This isn't quite the case for Clip Guided generations, which we'll tackle in a future example notebook.
+            steps=30, # Amount of inference steps performed on image generation. Defaults to 30.
+            cfg_scale=8.0, # Influences how strongly your generation is guided to match your prompt.
+                        # Setting this value higher increases the strength in which it tries to match your prompt.
+                        # Defaults to 7.0 if not specified.
+            width=512, # Generation width, defaults to 512 if not included.
+            height=512, # Generation height, defaults to 512 if not included.
+            samples=1, # Number of images to generate, defaults to 1 if not included.
+            sampler=generation.SAMPLER_K_DPMPP_2M # Choose which sampler we want to denoise our generation with.
+                                                        # Defaults to k_dpmpp_2m if not specified. Clip Guidance only supports ancestral samplers.
+                                                        # (Available Samplers: ddim, plms, k_euler, k_euler_ancestral, k_heun, k_dpm_2, k_dpm_2_ancestral, k_dpmpp_2s_ancestral, k_lms, k_dpmpp_2m)
+        )
+
+        # Set up our warning to print to the console if the adult content classifier is tripped.
+        # If adult content classifier is not tripped, save generated images.
+
+        filter = "off"
+        for resp in answers:
+            for artifact in resp.artifacts:
+                if artifact.finish_reason == generation.FILTER:
+                    warnings.warn(
+                        "Your request activated the API's safety filters and could not be processed."
+                        "Please modify the prompt and try again.")
+                    imagebot =""
+                    await event.message.respond("Whoops I can't draw that! Sorry D:")
+                    event.message.respond("W")
+                    print("sad")
+                    filter = "on"
+                    break
+                if artifact.type == generation.ARTIFACT_IMAGE:
+                    filter = "off"
+                    img = Image.open(io.BytesIO(artifact.binary))
+                    img2 = img.save("imagebot.png") # Save our generated images with their seed number as the filename.
+                    print("success")
+                
+            
+        if filter == "off":
+            imagebot = "imagebot.png"
+            await event.message.respond(attachment= imagebot)
+            filter = "on"
+
+
+
+
+#################################################################
+
+
+
+
 #Displays all of the commands
 @bot.listen(hikari.GuildMessageCreateEvent)
 async def Commands(event):
 
     if event.content.startswith("Rcommands") or event.content.startswith("rcommands"):
-        await event.message.respond("The commands are: 'Rcommands', 'Rcoinflip', 'Ranimal', and 'Rwotd'", reply=True)
+        await event.message.respond("The commands are: 'Rcommands', 'Rcoinflip', 'Rdraw', and 'Rwotd'. For Rdraw, tell me something you would like for me to draw", reply=True)
+
+
 
 bot.run()
 
