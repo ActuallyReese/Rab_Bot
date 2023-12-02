@@ -75,12 +75,12 @@ async def Panda(event):
 
 
 #prints the message author's username
-@bot.listen(hikari.MessageCreateEvent)
+@bot.listen(hikari.GuildMessageCreateEvent)
 async def print_user(event):
     print(event.author, event.author_id)
 
 #prints the message
-@bot.listen(hikari.MessageCreateEvent)
+@bot.listen(hikari.GuildMessageCreateEvent)
 async def print_message(event):
     print(event.content)
 
@@ -90,7 +90,7 @@ async def bot_started(event):
     print('Bot has started!')
 
 #Randomly responds and reacts to messages
-@bot.listen(hikari.MessageCreateEvent)
+@bot.listen(hikari.GuildMessageCreateEvent)
 async def Bwaah(event):
     x = randint(1, 500)
     print("x is ", x)
@@ -181,12 +181,13 @@ async def Picture(event):
 
     if event.content.startswith("Rdraw") or event.content.startswith("rdraw"):
         rprompt = (event.content + " add a rabbit").replace("rdraw", "")
-        chance = randint(1, 2)
-        if chance == 1:
-            await event.message.respond("One moment, please :)")
-        elif chance == 2:
-            await event.message.respond("Coming right up!")
-        print(rprompt)
+        await event.message.respond("I can't do that at the moment; I'm sorry")
+        #chance = randint(1, 2)
+        #if chance == 1:
+           # await event.message.respond("One moment, please :)")
+        #elif chance == 2:
+           # await event.message.respond("Coming right up!")
+       # print(rprompt)
 
 
 #################################################################################
@@ -195,7 +196,7 @@ async def Picture(event):
         stability_api = client.StabilityInference(
         key= STABILITY_KEY, # API Key reference.
         verbose=True, # Print debug messages.
-        engine="stable-diffusion-v1-5", # Set the engine to use for generation.
+        engine="stable-diffusion-768-v2-1", # Set the engine to use for generation.
         # Available engines: stable-diffusion-v1 stable-diffusion-v1-5 stable-diffusion-512-v2-0 stable-diffusion-768-v2-0
         # stable-diffusion-512-v2-1 stable-diffusion-768-v2-1 stable-inpainting-v1-0 stable-inpainting-512-v2-0
         )
@@ -239,6 +240,7 @@ async def Picture(event):
                     img = Image.open(io.BytesIO(artifact.binary))
                     img2 = img.save("imagebot.png") # Save our generated images with their seed number as the filename.
                     print("success")
+
                 
             
         if filter == "off":
