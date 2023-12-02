@@ -7,6 +7,11 @@ import re
 from datetime import date, datetime
 import time
 import schedule
+from tkinter import *
+from tkinter import ttk
+import threading
+from threading import Event
+
 
 from config import Hikari_Key, Api_Key, WORDNIK_API_KEY, STABILITY_KEY
 from animalfact import get_panda
@@ -70,12 +75,12 @@ async def Panda(event):
 
 
 #prints the message author's username
-@bot.listen(hikari.GuildMessageCreateEvent)
+@bot.listen(hikari.MessageCreateEvent)
 async def print_user(event):
     print(event.author, event.author_id)
 
 #prints the message
-@bot.listen(hikari.GuildMessageCreateEvent)
+@bot.listen(hikari.MessageCreateEvent)
 async def print_message(event):
     print(event.content)
 
@@ -85,7 +90,7 @@ async def bot_started(event):
     print('Bot has started!')
 
 #Randomly responds and reacts to messages
-@bot.listen(hikari.GuildMessageCreateEvent)
+@bot.listen(hikari.MessageCreateEvent)
 async def Bwaah(event):
     x = randint(1, 500)
     print("x is ", x)
@@ -104,7 +109,7 @@ async def Bwaah(event):
 
 
 #Responds to a specific set of words
-@bot.listen(hikari.GuildMessageCreateEvent)
+@bot.listen(hikari.MessageCreateEvent)
 async def WordRespond(event):
     if re.search("(?i)([^A-Z]?L[^A-Z]?o[^A-Z]?s[^A-Z]?s[^A-Z]?)|([^A-Z]?l[^A-Z]?o[^A-Z]?s[^A-Z]?t[^A-Z]?)|([^A-Z]?l[^A-Z]?o[^A-Z]?s[^A-Z]?e[^A-Z]?)",event.content):
         await event.message.respond("|   \|l \n||  |_")
@@ -114,7 +119,7 @@ async def WordRespond(event):
 
         
 #Responds when mentioned (@RabBot)
-@bot.listen(hikari.GuildMessageCreateEvent)
+@bot.listen(hikari.MessageCreateEvent)
 async def MessageMentionResponse(event):
     username = str(event.author).translate({ord(i): None for i in '#1234567890'})
     x = randint(1, 7)
@@ -138,7 +143,7 @@ async def MessageMentionResponse(event):
 
 
 #Will respond with the word of the day if the message is "!wotd"
-@bot.listen(hikari.GuildMessageCreateEvent)
+@bot.listen(hikari.MessageCreateEvent)
 async def WordOfTheDay(event):
     current_date = date.today()
     words = (get_word_of_the_day(current_date))
@@ -147,7 +152,7 @@ async def WordOfTheDay(event):
         await event.message.respond("**Today's Word: **"+wordsCap+" \n**Category: **"+words['partOfSpeech'].capitalize()+"\n**Definition: **"+words['definition']+"\n**Note: **"+words['note'], tts=Toggle)
 
 #Flips a coin
-@bot.listen(hikari.GuildMessageCreateEvent)
+@bot.listen(hikari.MessageCreateEvent)
 async def Coinflip(event):
 
     if event.content.startswith("Rcoinflip") or event.content.startswith("rcoinflip"):
@@ -160,7 +165,7 @@ async def Coinflip(event):
 
 
 #Reacts to specific users
-@bot.listen(hikari.GuildMessageCreateEvent)
+@bot.listen(hikari.MessageCreateEvent)
 async def Coins(event):
     react = randint(1, 20)
     if event.author_id==514109465675694091 and react == 2 or event.author_id==175768537779011584 and react == 2:
@@ -170,7 +175,7 @@ async def Coins(event):
 
 
 #Stable Diffusion
-@bot.listen(hikari.GuildMessageCreateEvent)
+@bot.listen(hikari.MessageCreateEvent)
 async def Picture(event):
     STABILITY_HOST = 'grpc.stability.ai:443'
 
@@ -250,7 +255,7 @@ async def Picture(event):
 
 
 #Displays all of the commands
-@bot.listen(hikari.GuildMessageCreateEvent)
+@bot.listen(hikari.MessageCreateEvent)
 async def Commands(event):
 
     if event.content.startswith("Rcommands") or event.content.startswith("rcommands"):
@@ -258,5 +263,49 @@ async def Commands(event):
 
 
 
-bot.run()
 
+
+#
+
+
+
+
+def go():
+    bot.run()
+
+
+# #def startThread():
+#     #rab.start()
+
+def stop():
+     bot.join()
+
+
+
+
+
+
+
+# create and configure a new thread
+#rab = threading.Thread(target=go, daemon=True)
+
+# wait for the new thread to finish
+
+
+root = Tk()
+root.title("RabBot")
+
+mainframe = ttk.Frame(root, padding="43 43 52 52")
+mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
+root.columnconfigure(0, weight=1)
+root.rowconfigure(0, weight=1)
+
+ttk.Button(mainframe, text="Start RabBot", command=go).grid(column=1, row=1, sticky=W)
+
+ttk.Button(mainframe, text="Stop RabBot", command=stop).grid(column=2, row=1, sticky=E)
+
+for child in mainframe.winfo_children(): 
+    child.grid_configure(padx=5, pady=5)
+    
+
+root.mainloop()
