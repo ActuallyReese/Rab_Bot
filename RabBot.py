@@ -143,26 +143,26 @@ async def on_message(message):
 #################################################################################
 
             # Set up our connection to the API.
-        response = requests.post(
-        f"https://api.stability.ai/v2beta/stable-image/generate/core",
-        headers={
-            "authorization": STABILITY_KEY,
-            "accept": "image/*"
-        },
-        files={"none": ''},
-        data={
-            "prompt": rprompt,
-            "output_format": "png",
-        },
-        )
+        # response = requests.post(
+        # f"https://api.stability.ai/v2beta/stable-image/generate/core",
+        # headers={
+        #     "authorization": STABILITY_KEY,
+        #     "accept": "image/*"
+        # },
+        # files={"none": ''},
+        # data={
+        #     "prompt": rprompt,
+        #     "output_format": "png",
+        # },
+        # )
 
-        if response.status_code == 200:
-            with open("./images/" + rprompt + ".png", 'wb') as file:
-                file.write(response.content)
-            await message.send(file = response.content)
-        else:
-            await message.reply("Oops all out of tokens")
-            raise Exception(str(response.json()))
+        # if response.status_code == 200:
+        #     with open("./images/" + rprompt + ".png", 'wb') as file:
+        #         file.write(response.content)
+        #     await message.send(file = response.content)
+        # else:
+        #     await message.reply("Oops all out of tokens")
+        #     raise Exception(str(response.json()))
             
 
 #################################################################
