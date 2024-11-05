@@ -23,9 +23,9 @@ from animalfact import get_panda
 import os
 import io
 import warnings
-from PIL import Image
-from stability_sdk import client
-import stability_sdk.interfaces.gooseai.generation.generation_pb2 as generation
+#from PIL import Image
+#from stability_sdk import client
+#import stability_sdk.interfaces.gooseai.generation.generation_pb2 as generation
 
 current_date = date.today()
 
@@ -127,17 +127,17 @@ async def on_message(message):
 
 
 
-    STABILITY_HOST = 'grpc.stability.ai:443'
+    # STABILITY_HOST = 'grpc.stability.ai:443'
 
-    if message.content.startswith("Rdraw") or message.content.startswith("rdraw"):
-        rprompt = (message.content + " add a rabbit").replace("rdraw", "")
-        #await event.message.respond("I can't do that at the moment; I'm sorry")
-        chance = randint(1, 2)
-        if chance == 1:
-            await message.reply("One moment, please :)")
-        elif chance == 2:
-            await message.reply("Coming right up!")
-        print(rprompt)
+    # if message.content.startswith("Rdraw") or message.content.startswith("rdraw"):
+    #     rprompt = (message.content + " add a rabbit").replace("rdraw", "")
+    #     #await event.message.respond("I can't do that at the moment; I'm sorry")
+    #     chance = randint(1, 2)
+    #     if chance == 1:
+    #         await message.reply("One moment, please :)")
+    #     elif chance == 2:
+    #         await message.reply("Coming right up!")
+    #     print(rprompt)
 
 
 #################################################################################
